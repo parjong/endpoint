@@ -1,0 +1,6 @@
+/uv.lock
+/.python-version
+
+# Reserved for local testing
+/Makefile
+/credential.envrc

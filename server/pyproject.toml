@@ -1,0 +1,23 @@
+[project]
+name = "endpoint"
+version = "0.1.0"
+authors = [
+    { name = "Jonghyun Park", email = "parjong@gmail.com" }
+]
+requires-python = "==3.14.*"
+dependencies = [
+    "click==8.3.*",
+    "gql[requests]==4.0.*",
+]
+
+[project.scripts]
+endpoint = "endpoint:main"
+
+[build-system]
+requires = ["uv_build>=0.9.3,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff==0.14.10",
+]

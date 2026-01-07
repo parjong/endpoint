@@ -13,6 +13,28 @@ repos:
       - id: actionlint
     # hooks/ END
   # actionlint/ END
+
+  - repo: https://github.com/ddanier/sub-pre-commit.git
+    rev: v4.5.1
+    hooks:
+      - id: sub-pre-commit
+        alias: server
+        name: 'Run pre-commit for server'
+        args: ['-p', 'server']
+        files: "^server/.*"
+        stages: ["pre-commit"]
+      # server/ END
+
+      - id: sub-pre-commit
+        alias: cikit
+        name: 'Run pre-commit for cikit'
+        args: ['-p', '.github/cikit']
+        files: "^.github/cikit/.*"
+        stages: ["pre-commit"]
+      # server/ END
+
+    # hooks/ END
+  # sub-pre-commit/ END
 # repos/ END
 
 # CONTRIBUTION GUIDE> How to use pre-commit?
