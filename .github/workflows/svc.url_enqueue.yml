@@ -1,0 +1,37 @@
+name: 'svc/url_enqueue'
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to enqueue'
+        required: true
+      # url/ END
+    # inputs/ END
+  # workflow_dispatch/ END
+# on/ END
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '${{ github.event.inputs.url }}'
+
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: 0.9.22 # Latest as of 2026 Jan 07
+        # with/ END
+
+      - run: uv tool install --force .
+
+      # TODO How to create 'entrypoint.config.toml'
+
+      - name: 'Enqueue URL'
+        env:
+          TOKEN: 'TO BE FILLED'
+        run: endpoint url enqueue '${{ github.event.inputs.url }}'
+    # steps/ END
+  # run/ END
+# jobs/ END
