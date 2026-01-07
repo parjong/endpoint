@@ -1,0 +1,23 @@
+name: 'PR/CHECK'
+
+on:
+  pull_request:
+    branches: [ 'main' ]
+  # pull_request: END
+# on/ END
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: 0.9.22 # Latest as of 2026 Jan 07
+        # with/ END
+
+      - run: uvx --from pre-commit==4.5.1 pre-commit run
+    # steps/ END
+  # run/ END
+# jobs/ END

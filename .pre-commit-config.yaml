@@ -1,0 +1,22 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+    # hooks/ END
+  # pre-commit-hooks/ END
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.10
+    hooks:
+      - id: actionlint
+    # hooks/ END
+  # actionlint/ END
+# repos/ END
+
+# CONTRIBUTION GUIDE> How to use pre-commit?
+#
+# uvx --from pre-commit==4.5.1 pre-commit run
+#
+# uvx --from pre-commit==4.5.1 pre-commit install
