@@ -36,7 +36,7 @@ jobs:
           GIST_URL: ${{ secrets.CONFIG_GIST_URL }}
         run: cikit download-gist -o endpoint.config.toml "$GIST_URL/prod.toml"
 
-      - name: 'Enqueue URL to reqdit!'
+      - name: 'Enqueue URL to readit!'
         env:
           OWNER_TOKEN: ${{ secrets.TOKEN }}
         run: endpoint readit enqueue '${{ github.event.inputs.url }}'
