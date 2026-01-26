@@ -6,12 +6,15 @@ authors = [
 ]
 requires-python = "==3.14.*"
 dependencies = [
+    "arxiv>=2.4.0",
+    "beautifulsoup4>=4.14.3",
     "click==8.3.*",
     "gql[requests]==4.0.*",
 ]
 
 [project.scripts]
 endpoint = "endpoint:main"
+endpoint-readit-send-to-personal = "endpoint.readit.app.send_to_personal:main"
 
 [build-system]
 requires = ["uv_build>=0.9.3,<0.10.0"]
