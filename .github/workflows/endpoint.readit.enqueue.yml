@@ -40,6 +40,11 @@ jobs:
         env:
           OWNER_TOKEN: ${{ secrets.TOKEN }}
         run: endpoint readit enqueue '${{ github.event.inputs.url }}'
+
+      - name: 'Enqueue page to personal'
+        env:
+          OWNER_TOKEN: ${{ secrets.TOKEN }}
+        run: endpoint-readit-send-to-personal '${{ github.event.inputs.url }}'
     # steps/ END
   # run/ END
 # jobs/ END
