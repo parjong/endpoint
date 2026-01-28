@@ -76,7 +76,7 @@ class PersonalStorage:
         CreateDiscussion(
             repositoryId=self.REPOSITORY_ID,
             categoryId="DIC_kwDOBRyrHc4Cz61s",
-            title=f"[YYYY/MM/DD] {page.title}",
+            title=f"[{page.date}] {page.title}",
             body=f"{page.url_as_str()}",
         ).execute(self._client)
 
