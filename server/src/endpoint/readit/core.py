@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 
+from bs4 import BeautifulSoup
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 from pydantic import Field
-import urllib.request
+import requests
 from urllib.parse import ParseResult as URL
 from urllib.parse import urlparse
 from urllib.parse import urlunparse
@@ -22,23 +23,32 @@ class Summary(BaseModel):
 @dataclass
 class Page:
     url: URL
-    title: str
-    date: str
+    body: str
 
     def url_as_str(self) -> str:
         return urlunparse(self.url)
 
 
 def page_of_(url: str) -> Page:
-    with urllib.request.urlopen(url) as response:
-        page_html = response.read()
+    response = requests.get(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124"
+        },
+    )
+    response.raise_for_status()
 
-        page_url = urlparse(response.geturl())
+    page_url = urlparse(response.url)
+    soup = BeautifulSoup(response.text, "html.parser")
 
     if page_url.netloc == "www.linkedin.com":
         if page_url.path.startswith("/posts/"):
             page_url = page_url._replace(query="")
 
+    return Page(url=page_url, body=soup.body)
+
+
+def summary_of_(page: Page) -> Summary:
     prompt = ChatPromptTemplate.from_template("""
     Analyze the following content from a webpage and extract two pieces of information:
     1. The concise main title of the article or page.
@@ -55,6 +65,4 @@ def page_of_(url: str) -> Page:
 
     chain = prompt | structured_llm
 
-    summary = chain.invoke({"content": page_html})
-
-    return Page(url=page_url, title=summary.title, date=summary.date)
+    return chain.invoke({"content": page.body})

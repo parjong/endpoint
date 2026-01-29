@@ -1,18 +1,13 @@
-import click
-
 from gql import Client
 from gql import gql
 from gql.transport.requests import RequestsHTTPTransport as HTTPTransport
 
 from logging import getLogger
-import os
 
 from endpoint.readit.core import Page
-from endpoint.readit.core import page_of_
 
 
 logger = getLogger(__name__)
-logger.setLevel(os.environ.get("ENTRYPOINT_LOG_LEVEL", "INFO").upper())
 
 
 class AddProjectV2DraftIssue:
@@ -39,18 +34,16 @@ class AddProjectV2DraftIssue:
         pass
 
 
-class Queue:
+class Sink:
     PROJECT_ID = "PVT_kwHOAOPA3c4BNgtr"
 
-    def __init__(self):
-        github_graphql_url = os.environ["GITHUB_GRAPHQL_URL"]
-
-        owner_token = os.environ["OWNER_TOKEN"]
+    def __init__(self, *, token: str):
+        github_graphql_url = "https://api.github.com/graphql"
 
         self._client = Client(
             transport=HTTPTransport(
                 url=github_graphql_url,
-                headers={"Authorization": f"Bearer {owner_token}"},
+                headers={"Authorization": f"Bearer {token}"},
             )
         )
 
@@ -58,19 +51,3 @@ class Queue:
         AddProjectV2DraftIssue(
             projectId=self.PROJECT_ID, title=page.title, body=page.url_as_str()
         ).execute(self._client)
-
-
-@click.command()
-@click.argument("user_url")
-def main(user_url: str) -> None:
-    logger.info("Add '%s'", user_url)
-
-    page = page_of_(user_url)
-
-    logger.info("page = '%s'", page)
-
-    queue = Queue()
-
-    queue.add(page)
-
-    logger.info("Done")
