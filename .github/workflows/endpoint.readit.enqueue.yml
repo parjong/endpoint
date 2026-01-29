@@ -41,7 +41,6 @@ jobs:
           OWNER_TOKEN: ${{ secrets.TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          endpoint readit enqueue '${{ github.event.inputs.url }}'
           endpoint-readit-send-to-personal '${{ github.event.inputs.url }}'
           endpoint-readit-send-to-queue-v2 '${{ github.event.inputs.url }}'
         continue-on-error: true
