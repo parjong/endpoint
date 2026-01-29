@@ -36,21 +36,16 @@ jobs:
           GIST_URL: ${{ secrets.CONFIG_GIST_URL }}
         run: cikit download-gist -o endpoint.config.toml "$GIST_URL/prod.toml"
 
-      - name: 'Enqueue URL to readit!'
-        env:
-          OWNER_TOKEN: ${{ secrets.TOKEN }}
-        run: endpoint readit enqueue '${{ github.event.inputs.url }}'
-
-      - name: 'Enqueue page to personal'
+      - name: 'Enqueue'
         env:
           OWNER_TOKEN: ${{ secrets.TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: endpoint-readit-send-to-personal '${{ github.event.inputs.url }}'
-
-      - name: 'Enqueue page to queue v2'
-        env:
-          OWNER_TOKEN: ${{ secrets.TOKEN }}
-        run: endpoint-readit-send-to-queue-v2 '${{ github.event.inputs.url }}'
+        run: |
+          endpoint readit enqueue '${{ github.event.inputs.url }}'
+          endpoint-readit-send-to-personal '${{ github.event.inputs.url }}'
+          endpoint-readit-send-to-queue-v2 '${{ github.event.inputs.url }}'
+        continue-on-error: true
+        # 'continue-on-error' ensures that a failure from one command not to affect the others
     # steps/ END
   # run/ END
 # jobs/ END
