@@ -2,6 +2,5 @@
 /.python-version
 
 # Reserved for local testing
-/Makefile
 /etc/user.env
 /endpoint.config.toml
