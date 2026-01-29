@@ -1,20 +1,15 @@
 import arxiv
 
-import click
-
 from gql import Client
 from gql import gql
 from gql.transport.requests import RequestsHTTPTransport as HTTPTransport
 
 from logging import getLogger
-import os
 
 from endpoint.readit.core import Page
-from endpoint.readit.core import page_of_
 
 
 logger = getLogger(__name__)
-logger.setLevel(os.environ.get("ENTRYPOINT_LOG_LEVEL", "INFO").upper())
 
 
 class CreateDiscussion:
@@ -46,15 +41,13 @@ title: $title,
 class PersonalStorage:
     REPOSITORY_ID = "MDEwOlJlcG9zaXRvcnk4NTc2NDg5Mw=="
 
-    def __init__(self):
-        github_graphql_url = os.environ["GITHUB_GRAPHQL_URL"]
-
-        owner_token = os.environ["OWNER_TOKEN"]
+    def __init__(self, *, token: str):
+        github_graphql_url = "https://api.github.com/graphql"
 
         self._client = Client(
             transport=HTTPTransport(
                 url=github_graphql_url,
-                headers={"Authorization": f"Bearer {owner_token}"},
+                headers={"Authorization": f"Bearer {token}"},
             )
         )
 
@@ -81,22 +74,16 @@ class PersonalStorage:
         ).execute(self._client)
 
 
-@click.command()
-@click.argument("user_url")
-def main(user_url: str) -> None:
-    logger.info("Add '%s'", user_url)
+class Sink:
+    def __init__(self, *, token: str):
+        self._storage = PersonalStorage(token=token)
 
-    page = page_of_(user_url)
+    def add(self, page: Page):
+        if page.url.netloc == "arxiv.org":
+            arxiv_id = page.url.path.split("/")[-1]
+            self._storage.add_arXiv_article(arxiv_id)
+            # TODO Implement fallback to "other" feature
+        else:
+            self._storage.add_other_article(page)
 
-    logger.info("page = '%s'", page)
-
-    storage = PersonalStorage()
-
-    if page.url.netloc == "arxiv.org":
-        arxiv_id = page.url.path.split("/")[-1]
-        storage.add_arXiv_article(arxiv_id)
-        # TODO Implement fallback to "other" feature
-    else:
-        storage.add_other_article(page)
-
-    logger.info("Done")
+        logger.info("Done")
