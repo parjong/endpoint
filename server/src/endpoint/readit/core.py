@@ -28,6 +28,17 @@ class Page:
     def url_as_str(self) -> str:
         return urlunparse(self.url)
 
+    def asdict(self):
+        return {
+            "url": urlunparse(self.url),
+            "title": self.title,
+            "date": self.date,
+        }
+
+    @classmethod
+    def fromdict(cls, d):
+        return cls(url=urlparse(d["url"]), title=d["title"], date=d["date"])
+
 
 def page_of_(url: str) -> Page:
     with urllib.request.urlopen(url) as response:

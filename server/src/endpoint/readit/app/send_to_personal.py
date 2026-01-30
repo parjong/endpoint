@@ -6,11 +6,11 @@ from gql import Client
 from gql import gql
 from gql.transport.requests import RequestsHTTPTransport as HTTPTransport
 
+import json
 from logging import getLogger
 import os
 
 from endpoint.readit.core import Page
-from endpoint.readit.core import page_of_
 
 
 logger = getLogger(__name__)
@@ -82,13 +82,10 @@ class PersonalStorage:
 
 
 @click.command()
-@click.argument("user_url")
-def main(user_url: str) -> None:
-    logger.info("Add '%s'", user_url)
-
-    page = page_of_(user_url)
-
-    logger.info("page = '%s'", page)
+@click.argument("summary_path")
+def main(summary_path: str) -> None:
+    with open(summary_path, "r") as f:
+        page = Page.fromdict(json.load(f))
 
     storage = PersonalStorage()
 
